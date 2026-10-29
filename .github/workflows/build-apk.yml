@@ -32,8 +32,16 @@ jobs:
         cd frontend
         yes | flet build apk
     
+    - name: Find APK file
+      run: |
+        echo "Searching for APK file..."
+        find frontend -name "*.apk" -type f
+        APK_PATH=$(find frontend -name "*.apk" -type f | head -n 1)
+        echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
+    
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: ServiceBook-APK
-        path: frontend/build/app/outputs/flutter-apk/app-release.apk
+        path: ${{ env.APK_PATH }}
+        if-no-files-found: error
