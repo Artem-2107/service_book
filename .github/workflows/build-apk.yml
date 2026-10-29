@@ -22,10 +22,15 @@ jobs:
         python -m pip install --upgrade pip
         pip install "flet[all]"
     
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+    
     - name: Build APK
       run: |
         cd frontend
-        flet build apk
+        yes | flet build apk
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
