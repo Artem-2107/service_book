@@ -1,4 +1,5 @@
 import flet as ft
+import sys
 from config import APP_TITLE
 from api_client import api
 from screens.main_screen import MainScreen
@@ -68,4 +69,8 @@ def main(page: ft.Page):
 
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    # В Flet 0.25.x используется ft.app с view=ft.WEB_BROWSER
+    if "--web" in sys.argv:
+        ft.app(target=main, view=ft.WEB_BROWSER, port=8550)
+    else:
+        ft.app(target=main)

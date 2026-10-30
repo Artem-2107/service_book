@@ -20,7 +20,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install "flet[all]"
+        # Жёстко фиксируем версии, которые совместимы друг с другом
+        pip install "flet[all]==0.25.2" "fastapi==0.109.2" "starlette==0.36.3"
     
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
@@ -32,13 +33,13 @@ jobs:
         cd frontend
         yes | flet build apk
     
-    - name: Find APK file
+    - name: Find and Upload APK
       run: |
         echo "Searching for APK file..."
-        find frontend -name "*.apk" -type f
         APK_PATH=$(find frontend -name "*.apk" -type f | head -n 1)
         echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
-    
+      shell: bash
+
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
