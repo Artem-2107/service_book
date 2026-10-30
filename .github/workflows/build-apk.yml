@@ -20,12 +20,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        # Жёстко фиксируем версии, которые совместимы друг с другом
         pip install "flet[all]==0.25.2" "fastapi==0.109.2" "starlette==0.36.3"
     
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
+        flutter-version: '3.24.5' # <-- ИСПРАВЛЕНИЕ: фиксируем версию Flutter, совместимую с Flet 0.25.2
         channel: 'stable'
     
     - name: Build APK
