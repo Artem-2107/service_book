@@ -24,17 +24,27 @@ class ApiClient:
                        json_data: Optional[Dict[str, Any]] = None) -> httpx.Response:
         url = f"{self.base_url}{path}"
         headers = self._get_headers()
-        async with httpx.AsyncClient(timeout=15.0) as client:
-            response = await client.request(method, url, headers=headers, params=params, json=json_data)
-        return response
+        try:
+            async with httpx.AsyncClient(timeout=15.0) as client:
+                response = await client.request(method, url, headers=headers, params=params, json=json_data)
+            return response
+        except httpx.ConnectError as e:
+            raise ConnectionError(f"Не удалось подключиться к серверу {self.base_url}. Проверьте, что backend запущен и телефон в той же Wi-Fi сети. Ошибка: {str(e)}")
+        except Exception as e:
+            raise Exception(f"Ошибка сети: {str(e)}")
 
     async def login(self, username: str, password: str) -> Dict[str, Any]:
-        response = await self._request("POST", "/auth/login", json_data={"username": username, "password": password})
-        if response.status_code != 200:
-            raise ValueError(response.json().get("detail", "Ошибка входа"))
-        data = response.json()
-        self.set_token(data["access_token"])
-        return data
+        try:
+            response = await self._request("POST", "/auth/login", json_data={"username": username, "password": password})
+            if response.status_code != 200:
+                raise ValueError(response.json().get("detail", "Ошибка входа"))
+            data = response.json()
+            self.set_token(data["access_token"])
+            return data
+        except ConnectionError:
+            raise
+        except Exception as e:
+            raise ValueError(f"Ошибка входа: {str(e)}")
 
     async def register(self, data: Dict[str, Any]) -> Dict[str, Any]:
         response = await self._request("POST", "/auth/register", json_data=data)
