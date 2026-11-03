@@ -48,7 +48,11 @@ def main(page: ft.Page):
     def show_register():
         page.clean()
         page.appbar = None
-        reg = RegisterScreen(page)
+
+        def on_registered():
+            show_login()
+
+        reg = RegisterScreen(page, on_back_to_login=on_registered)
         page.add(ft.Container(content=reg.build(), expand=True, alignment=ft.alignment.center))
         page.update()
 

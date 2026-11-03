@@ -24,7 +24,7 @@ class LoginScreen:
                 ft.ElevatedButton("Войти", width=200, on_click=self._login),
                 self.loading,
                 ft.Divider(height=16, color=ft.Colors.TRANSPARENT),
-                ft.TextButton("Нет аккаунта? Зарегистрироваться", on_click=self.on_register_click),
+                ft.TextButton("Нет аккаунта? Зарегистрироваться", on_click=self._go_to_register),
             ], horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=12),
         )
 
@@ -45,3 +45,7 @@ class LoginScreen:
                 self.page.update()
 
         self.page.run_task(do_login)
+
+    def _go_to_register(self, e):
+        if self.on_register_click:
+            self.on_register_click()
